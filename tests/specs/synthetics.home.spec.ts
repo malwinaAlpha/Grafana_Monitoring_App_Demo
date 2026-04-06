@@ -11,15 +11,31 @@ test.describe('Synthetic Home Page Tests', () => {
     expect(currentRegion).toBe(homePage.Region.ALL);
   });
 
-  test('Filtering checks by region', async ({ page }) => {
+  test('Filtering checks by region', { tag: ['@smoke'] }, async ({ page }) => {
     const homePage = new SyntheticsHomePage(page);
+
+    // Get initial check count with "All" region
+    const initialCount = await homePage.getChecksCount();
+    expect(initialCount).toBeGreaterThan(0);
 
     // Select "EMEA" region and verify
     await homePage.selectRegion(homePage.Region.EMEA);
     let selectedRegion = await homePage.getCurrentRegionValue();
     expect(selectedRegion).toBe(homePage.Region.EMEA);
+    await expect(page).toHaveURL(/var-region=EMEA/);
 
-    //Click on the AMER region and verify the selection
+    // Verify that the number of checks changed after filtering (should be less or different)
+    const emeaCount = await homePage.getChecksCount();
+    expect(emeaCount).toBeLessThan(initialCount);
+
+    //Click the “region” dropdown and select a specific location “AMER”
+    await homePage.selectRegion(homePage.Region.AMER);
+    let selectedRegionAmer = await homePage.getCurrentRegionValue();
+    expect(selectedRegionAmer).toBe(homePage.Region.AMER);
+    await expect(page).toHaveURL(/var-region=AMER/);
+
+    const amerCount = await homePage.getChecksCount();
+    expect(amerCount).toBeLessThan(initialCount);
   });
 
   test('Review check details', async ({ page }) => {
@@ -41,11 +57,8 @@ test.describe('Synthetic Home Page Tests', () => {
 
     await homePage.homePageIsVisible();
 
-    // Click the region dropdown and select EMEA
-    //await homePage.openRegionDropdown();
-
     // Verify that only EMEA checks are displayed
-    const tableRows = await page.locator('table tr').all();
+    const tableRows = await homePage.tableRows.all();
     for (const row of tableRows) {
       const regionCell = await row.locator('td.region-column').textContent();
       expect(regionCell).toMatch(/EMEA/);
@@ -56,11 +69,10 @@ test.describe('Synthetic Home Page Tests', () => {
       // Unselect ALL and select NorthCalifornia
       await homePage.unselectProbeAll();
       await homePage.openProbeDropdown();
-      await homePage.selectProbe('NorthCalifornia'); // se nececita algun click fuera de la dropdown
+      await homePage.selectProbe('NorthCalifornia');
 
       // Verify no data is displayed
-      const noDataMessage = page.locator('text=No data');
-      await expect(noDataMessage).toBeVisible();
+      await expect(homePage.noDataMessage).toBeVisible();
     }
   });
 });

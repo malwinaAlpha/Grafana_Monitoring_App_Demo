@@ -12,7 +12,6 @@ export enum Region {
 const SYNTHETICS_HOME_URL = process.env.SYNTHETICS_HOME_URL ?? '';
 
 export class SyntheticsHomePage extends BasePage {
-  //filters
   readonly regionDropdown: Locator;
   readonly regionSelectedValue: Locator;
   readonly regionOption: (value: string) => Locator;
@@ -26,6 +25,9 @@ export class SyntheticsHomePage extends BasePage {
   readonly reachability: Locator;
   readonly probeDropdown: Locator;
   readonly probeAllOption: Locator;
+  readonly checksTable: Locator;
+  readonly tableRows: Locator;
+  readonly noDataMessage: Locator;
 
   constructor(page: Page) {
     super(page);
@@ -46,6 +48,9 @@ export class SyntheticsHomePage extends BasePage {
     this.panelContent = this.page.locator(
       '[data-testid="data-testid panel content"]'
     );
+    this.checksTable = this.panelContent.locator('table').first();
+    this.tableRows = this.checksTable.locator('tr');
+    this.noDataMessage = this.page.getByText('No data');
 
     this.probeDropdown = this.page.locator(
       '[aria-label="Probe Value Dropdown"]'
@@ -94,5 +99,13 @@ export class SyntheticsHomePage extends BasePage {
   async unselectProbeAll(): Promise<void> {
     await this.openProbeDropdown();
     await this.probeAllOption.click();
+  }
+
+  async getChecksCount(): Promise<number> {
+    await this.checksTable.isVisible();
+    await this.page.waitForTimeout(500); //todo replace with wait for network idle or some element state to ensure table is loaded
+    const rows = await this.tableRows.all();
+    console.log(`Number of checks displayed: ${rows.length}`);
+    return rows.length;
   }
 }
