@@ -10,12 +10,4 @@ export class BasePage {
   protected async navigateTo(url: string): Promise<void> {
     await this.page.goto(url);
   }
-
-  protected async waitForSelector(selector: string): Promise<void> {
-    await this.page.waitForSelector(selector);
-  }
-
-  protected async isVisible(selector: string): Promise<boolean> {
-    return this.page.isVisible(selector);
-  }
 }
