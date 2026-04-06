@@ -25,9 +25,14 @@ export class SyntheticsHomePage extends BasePage {
   readonly reachability: Locator;
   readonly probeDropdown: Locator;
   readonly probeAllOption: Locator;
+
+  //sections
   readonly checksTable: Locator;
   readonly tableRows: Locator;
   readonly noDataMessage: Locator;
+  readonly mapPanel: Locator;
+  readonly errorPanelContent: Locator;
+  readonly latencyPanel: Locator;
 
   constructor(page: Page) {
     super(page);
@@ -57,6 +62,11 @@ export class SyntheticsHomePage extends BasePage {
     );
     this.probeAllOption = this.page.getByRole('option', { name: 'All' });
     this.reachability = this.page.locator('[aria-label="Reachability"]');
+    this.mapPanel = this.page.getByRole('region', { name: /map/i });
+    this.errorPanelContent = page.getByRole('region', {
+      name: /latency|duration|response/i,
+    });
+    this.latencyPanel = page.getByRole('region', { name: /latency/i });
   }
 
   async navigateToSyntheticsHomePage(): Promise<void> {
@@ -67,6 +77,11 @@ export class SyntheticsHomePage extends BasePage {
   async homePageIsVisible(): Promise<void> {
     await expect(this.title).toHaveText('Home');
     await this.breadcrumb.isVisible();
+    await this.checksTable.isVisible();
+    await this.regionDropdown.isVisible();
+    await this.mapPanel.isVisible();
+    await this.errorPanelContent.isVisible();
+    await this.latencyPanel.isVisible();
   }
 
   async openRegionDropdown(): Promise<void> {
