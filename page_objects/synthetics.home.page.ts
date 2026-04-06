@@ -11,14 +11,17 @@ export enum Region {
 export class SyntheticsHomePage extends BasePage {
   //filters
   readonly regionDropdown: Locator;
+  readonly regionSelectedValue: Locator;
   readonly regionOption: (value: string) => Locator;
   readonly title: Locator;
+  Region: typeof Region = Region;
 
   //checks identifiers
 
   constructor(page: Page) {
     super(page);
-    this.regionDropdown = page.getByRole('button', { name: /region/i });
+    this.regionDropdown = page.locator('[data-testid*="Variable Value DropDown"][data-testid*="input"]').first();
+    this.regionSelectedValue = page.locator('[data-testid*="Variable Value DropDown value link text $__all"]').first().locator('div').filter({ hasText: /./ }).first();
     this.regionOption = (value: string) =>
       page.getByRole('option', { name: value });
     this.title = page.locator('h1');
@@ -30,7 +33,6 @@ export class SyntheticsHomePage extends BasePage {
 
   async openRegionDropdown(): Promise<void> {
     await this.regionDropdown.click();
-    await this.regionOption(Region.AMER).waitFor();
   }
 
   async selectRegion(region: Region): Promise<void> {
@@ -39,7 +41,7 @@ export class SyntheticsHomePage extends BasePage {
   }
 
   async getCurrentRegionValue(): Promise<Region> {
-    const value = await this.regionDropdown.textContent();
+    const value = await this.regionSelectedValue.textContent();
     return (value?.trim() ?? 'All') as Region;
   }
 }
