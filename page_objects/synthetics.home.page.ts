@@ -2,14 +2,14 @@ import { BasePage } from '@page_objects/base.page';
 import type { Locator, Page } from '@playwright/test';
 import { expect } from '@playwright/test';
 
+const SYNTHETICS_HOME_URL = process.env.SYNTHETICS_HOME_URL ?? '';
+
 export enum Region {
   ALL = 'All',
   AMER = 'AMER',
   APAC = 'APAC',
   EMEA = 'EMEA',
 }
-
-const SYNTHETICS_HOME_URL = process.env.SYNTHETICS_HOME_URL ?? '';
 
 export class SyntheticsHomePage extends BasePage {
   // PAGE IDENTIFICATION
