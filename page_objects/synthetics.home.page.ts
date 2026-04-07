@@ -64,7 +64,7 @@ export class SyntheticsHomePage extends BasePage {
     this.firstCheckName = this.panelContent
       .locator('a[data-testid="data-testid Data link"]')
       .nth(1);
-    this.noDataMessage = this.page.getByText('No data');
+    this.noDataMessage = this.page.getByRole('status', { name: /no data/i });
 
     this.probeDropdown = this.page
       .locator('[data-testid*="Variable Value DropDown"][data-testid*="input"]')
