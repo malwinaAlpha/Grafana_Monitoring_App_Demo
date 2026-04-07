@@ -1,5 +1,6 @@
 import { test, expect } from '@playwright/test';
 import { SyntheticsHomePage } from '@page_objects/synthetics.home.page';
+import { verifyRegionFilter } from './helpers/home.page.helpers';
 
 test.describe('Synthetic Home Page Tests', () => {
   test.beforeEach(async ({ page }) => {
@@ -16,26 +17,16 @@ test.describe('Synthetic Home Page Tests', () => {
 
     // Get initial check count with "All" region
     const initialCount = await homePage.getChecksCount();
-    expect(initialCount).toBeGreaterThan(0);
 
     // Select "EMEA" region and verify
     await homePage.selectRegion(homePage.Region.EMEA);
-    let selectedRegion = await homePage.getCurrentRegionValue();
-    expect(selectedRegion).toBe(homePage.Region.EMEA);
+    await verifyRegionFilter(homePage, homePage.Region.EMEA, initialCount);
     await expect(page).toHaveURL(/var-region=EMEA/);
 
-    // Verify that the number of checks changed after filtering (should be less or different)
-    const emeaCount = await homePage.getChecksCount();
-    expect(emeaCount).toBeLessThan(initialCount);
-
-    //Click the “region” dropdown and select a specific location “AMER”
+    // Select "AMER" region and verify
     await homePage.selectRegion(homePage.Region.AMER);
-    let selectedRegionAmer = await homePage.getCurrentRegionValue();
-    expect(selectedRegionAmer).toBe(homePage.Region.AMER);
+    await verifyRegionFilter(homePage, homePage.Region.AMER, initialCount);
     await expect(page).toHaveURL(/var-region=AMER/);
-
-    const amerCount = await homePage.getChecksCount();
-    expect(amerCount).toBeLessThan(initialCount);
   });
 
   test('Review check details', async ({ page }) => {
