@@ -1,5 +1,6 @@
 import { test, expect } from '@playwright/test';
 import { SyntheticsHomePage } from '@page_objects/synthetics.home.page';
+import { SyntheticsChecksPage } from '@page_objects/synthetics.checks.page';
 import { verifyRegionFilter } from './helpers/home.page.helpers';
 
 test.describe('Synthetic Home Page Tests', () => {
@@ -31,16 +32,23 @@ test.describe('Synthetic Home Page Tests', () => {
 
   test('Review check details', async ({ page }) => {
     const homePage = new SyntheticsHomePage(page);
+    const checksPage = new SyntheticsChecksPage(page);
 
     await homePage.homePageIsVisible();
-    await page.locator('text="browser-get-pizza"').click();
-    await expect(page).toHaveURL(/checks/);
-    await expect(
-      page.locator('h1:has-text("browser-get-pizza")')
-    ).toBeVisible();
-    //reachability displayed
-    await page.locator('.css-1fxx2s4', { hasText: 'Reachability' });
-    await expect(page.locator('text="Frequency"')).toBeVisible();
+
+    // Get the first check name from the table
+    const checkName = await homePage.firstCheckName.textContent();
+    expect(checkName).toBeTruthy();
+
+    // Click on the first check link
+    await homePage.firstCheckLink.click({ force: true });
+    await expect(page).toHaveURL(/checks\/\d+/);
+
+    // Verify we're on the check details page and check name is displayed
+    await checksPage.verifyReachabilityIsVisible();
+    await checksPage.verifyUptimeIsVisible();
+    expect(checkName).toBeDefined();
+    await expect(checksPage.title).toHaveText(checkName as string);
   });
 
   test('Handle no data scenario', async ({ page }) => {
@@ -48,22 +56,13 @@ test.describe('Synthetic Home Page Tests', () => {
 
     await homePage.homePageIsVisible();
 
-    // Verify that only EMEA checks are displayed
-    const tableRows = await homePage.tableRows.all();
-    for (const row of tableRows) {
-      const regionCell = await row.locator('td.region-column').textContent();
-      expect(regionCell).toMatch(/EMEA/);
+    await homePage.selectRegion(homePage.Region.EMEA);
+    await expect(page).toHaveURL(/var-region=EMEA/);
 
-      // Click the probe filter dropdown
-      await homePage.openProbeDropdown();
-
-      // Unselect ALL and select NorthCalifornia
-      await homePage.unselectProbeAll();
-      await homePage.openProbeDropdown();
-      await homePage.selectProbe('NorthCalifornia');
-
-      // Verify no data is displayed
-      await expect(homePage.noDataMessage).toBeVisible();
-    }
+    // Unselect ALL and select NorthCalifornia
+    await homePage.clearProbeFilters();
+    await homePage.selectProbe('NorthCalifornia');
+    // Verify no data is displayed
+    await expect(homePage.noDataMessage).toBeVisible();
   });
 });

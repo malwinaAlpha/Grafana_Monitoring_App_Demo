@@ -15,10 +15,6 @@ export class SyntheticsChecksPage extends BasePage {
     this.title = page.locator('h1');
   }
 
-  async navigate(url: string): Promise<void> {
-    await this.navigateTo(url);
-  }
-
   async verifyUptimeIsVisible(): Promise<void> {
     await this.uptimeHeader.isVisible();
   }
