@@ -105,6 +105,7 @@ export class SyntheticsHomePage extends BasePage {
   }
 
   async homePageIsVisible(): Promise<void> {
+    await this.title.waitFor({ state: 'visible' });
     await expect(this.title).toHaveText('Home');
     await this.breadcrumb.isVisible();
     await this.checksTable.isVisible();
