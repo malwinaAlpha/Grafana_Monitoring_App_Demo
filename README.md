@@ -78,10 +78,4 @@ npx playwright test --ui
 npx playwright test --grep "@smoke"
 ```
 
-### Run Smoke Tests
-
-```bash
-npx playwright test --grep "@smoke"
-```
-
 This command will execute only the tests tagged with `@smoke`. Use this to quickly verify critical functionalities.
