@@ -1,8 +1,8 @@
-import test from '../fixtures/pages.fixture';
 import { expect } from '@playwright/test';
-import { verifyRegionFilter } from './helpers/home.page.helpers';
+import { verifyRegionFilter } from '../../helpers/home.page.helpers';
 import { SyntheticsHomePage } from '@page_objects/synthetics.home.page';
 import { SyntheticsChecksPage } from '@page_objects/synthetics.checks.page';
+import test from '@fixtures/pages.fixture';
 
 declare module '@playwright/test' {
   interface TestFixtures {
