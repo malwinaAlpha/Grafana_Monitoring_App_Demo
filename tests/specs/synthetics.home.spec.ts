@@ -68,10 +68,9 @@ test.describe('Synthetic Home Page Tests', () => {
 
       // Unselect ALL and select NorthCalifornia
       await homePage.clearProbeFilters();
-      await homePage.selectProbe('CapeTown');
-      // Verify no data is displayed
-      await expect(homePage.noDataMessage).toBeVisible();
-      // await homePage.noDataMessage.isVisible(); // not good practice!!
+      await homePage.selectProbe('NorthCalifornia');
+      await homePage.clickEmptySpace(homePage.getPage());
+      await expect(homePage.noDataMessageAllCheckErrorPercentage).toBeVisible();
     }
   );
 });

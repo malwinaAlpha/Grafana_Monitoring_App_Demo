@@ -41,7 +41,7 @@ export class SyntheticsHomePage extends BasePage {
   readonly errorPanelContent: Locator;
 
   // MESSAGES
-  readonly noDataMessage: Locator;
+  readonly noDataMessageAllCheckErrorPercentage: Locator;
 
   // ENUMS
   readonly Region: typeof Region = Region;
@@ -98,7 +98,9 @@ export class SyntheticsHomePage extends BasePage {
     });
 
     // MESSAGES
-    this.noDataMessage = page.getByRole('status', { name: /no data/i });
+    this.noDataMessageAllCheckErrorPercentage = this.page
+      .locator('[data-testid="data-testid Panel data error message"]')
+      .first();
   }
 
   async navigateToSyntheticsHomePage(): Promise<void> {
@@ -136,7 +138,7 @@ export class SyntheticsHomePage extends BasePage {
   // PROBE FILTER ACTIONS
   async openProbeDropdown(): Promise<void> {
     await this.probeDropdown.isVisible();
-    await this.probeDropdown.click({ force: true }); // check it later ;
+    await this.probeDropdown.click({ force: true });
   }
 
   async selectProbe(probeName: string): Promise<void> {
@@ -157,5 +159,9 @@ export class SyntheticsHomePage extends BasePage {
     await this.page.waitForTimeout(500);
     const rows = await this.tableRows.all();
     return rows.length;
+  }
+
+  async clickEmptySpace(page: Page): Promise<void> {
+    await page.locator('body').click({ position: { x: 100, y: 100 } });
   }
 }
