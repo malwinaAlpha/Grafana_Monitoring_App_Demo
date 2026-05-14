@@ -5,6 +5,7 @@ import { expect } from '@playwright/test';
 const SYNTHETICS_HOME_URL = process.env.SYNTHETICS_HOME_URL ?? '';
 
 export enum Region {
+  // options I have in homepage, region filter
   ALL = 'All',
   AMER = 'AMER',
   APAC = 'APAC',
@@ -12,7 +13,7 @@ export enum Region {
 }
 
 export class SyntheticsHomePage extends BasePage {
-  // PAGE IDENTIFICATION
+  // PAGE IDENTIFICATION // SETUP DIVIDED BY THE FUNCTION
 
   readonly title: Locator;
   readonly breadcrumb: Locator;
@@ -40,12 +41,13 @@ export class SyntheticsHomePage extends BasePage {
   readonly errorPanelContent: Locator;
 
   // MESSAGES
-  readonly noDataMessage: Locator;
+  readonly noDataMessageAllCheckErrorPercentage: Locator;
 
   // ENUMS
   readonly Region: typeof Region = Region;
 
   constructor(page: Page) {
+    // HERE I INITIALIZE THEM
     super(page);
 
     // PAGE IDENTIFICATION
@@ -96,10 +98,13 @@ export class SyntheticsHomePage extends BasePage {
     });
 
     // MESSAGES
-    this.noDataMessage = page.getByRole('status', { name: /no data/i });
+    this.noDataMessageAllCheckErrorPercentage = this.page
+      .locator('[data-testid="data-testid Panel data error message"]')
+      .first();
   }
 
   async navigateToSyntheticsHomePage(): Promise<void> {
+    // functions which are actions for my tests
     await this.navigateTo(SYNTHETICS_HOME_URL);
     await this.panelContent.isVisible();
   }
@@ -154,5 +159,9 @@ export class SyntheticsHomePage extends BasePage {
     await this.page.waitForTimeout(500);
     const rows = await this.tableRows.all();
     return rows.length;
+  }
+
+  async clickEmptySpace(page: Page): Promise<void> {
+    await page.locator('body').click({ position: { x: 100, y: 100 } });
   }
 }
