@@ -70,6 +70,7 @@ test.describe('Synthetic Home Page Tests', () => {
       await homePage.clearProbeFilters();
       await homePage.selectProbe('NorthCalifornia');
       await homePage.clickEmptySpace(homePage.getPage());
+      await expect(homePage.firstCheckLink).toBeVisible();
       await expect(homePage.noDataMessageAllCheckErrorPercentage).toBeVisible();
     }
   );
