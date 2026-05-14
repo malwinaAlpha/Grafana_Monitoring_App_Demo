@@ -10,12 +10,12 @@ type Fixtures = {
   checksPage: SyntheticsChecksPage;
 };
 
-// Extend the base test with the fixtures
+// Extend the base test with the fixtures - this allows us to use the page objects in our tests without having to set them up in each test file
 const test = baseTest.extend<Fixtures>({
   homePage: async ({ page }, use) => {
-    const homePage = new SyntheticsHomePage(page);
-    await homePage.navigateTo(SYNTHETICS_HOME_URL);
-    await use(homePage);
+    const homePage = new SyntheticsHomePage(page); // create
+    await homePage.navigateTo(SYNTHETICS_HOME_URL); // set up
+    await use(homePage); //  use the fixture in the test
   },
   checksPage: async ({ page }, use) => {
     const checksPage = new SyntheticsChecksPage(page);

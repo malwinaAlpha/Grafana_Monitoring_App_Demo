@@ -5,6 +5,7 @@ import { expect } from '@playwright/test';
 const SYNTHETICS_HOME_URL = process.env.SYNTHETICS_HOME_URL ?? '';
 
 export enum Region {
+  // options I have in homepage, region filter
   ALL = 'All',
   AMER = 'AMER',
   APAC = 'APAC',
@@ -12,7 +13,7 @@ export enum Region {
 }
 
 export class SyntheticsHomePage extends BasePage {
-  // PAGE IDENTIFICATION
+  // PAGE IDENTIFICATION // SETUP DIVIDED BY THE FUNCTION
 
   readonly title: Locator;
   readonly breadcrumb: Locator;
@@ -46,6 +47,7 @@ export class SyntheticsHomePage extends BasePage {
   readonly Region: typeof Region = Region;
 
   constructor(page: Page) {
+    // HERE I INITIALIZE THEM
     super(page);
 
     // PAGE IDENTIFICATION
@@ -100,6 +102,7 @@ export class SyntheticsHomePage extends BasePage {
   }
 
   async navigateToSyntheticsHomePage(): Promise<void> {
+    // functions which are actions for my tests
     await this.navigateTo(SYNTHETICS_HOME_URL);
     await this.panelContent.isVisible();
   }
@@ -133,7 +136,7 @@ export class SyntheticsHomePage extends BasePage {
   // PROBE FILTER ACTIONS
   async openProbeDropdown(): Promise<void> {
     await this.probeDropdown.isVisible();
-    await this.probeDropdown.click({ force: true });
+    await this.probeDropdown.click({ force: true }); // check it later ;
   }
 
   async selectProbe(probeName: string): Promise<void> {

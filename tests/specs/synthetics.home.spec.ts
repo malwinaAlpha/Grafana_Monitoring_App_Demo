@@ -14,7 +14,7 @@ declare module '@playwright/test' {
 test.describe('Synthetic Home Page Tests', () => {
   test.beforeEach(async ({ homePage }) => {
     await homePage.homePageIsVisible();
-    // // Verify default region is "All"
+    // Verify default region is "All"
     let currentRegion = await homePage.getCurrentRegionValue();
     expect(currentRegion).toBe(homePage.Region.ALL);
   });
@@ -68,9 +68,10 @@ test.describe('Synthetic Home Page Tests', () => {
 
       // Unselect ALL and select NorthCalifornia
       await homePage.clearProbeFilters();
-      await homePage.selectProbe('NorthCalifornia');
+      await homePage.selectProbe('CapeTown');
       // Verify no data is displayed
-      await homePage.noDataMessage.isVisible();
+      await expect(homePage.noDataMessage).toBeVisible();
+      // await homePage.noDataMessage.isVisible(); // not good practice!!
     }
   );
 });
